@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+
 # Create your models here.
 
 class Project(models.Model):
     title = models.CharField(max_length=200)
+    categories = models.JSONField(default=list)
     description = models.TextField()
     goal = models.IntegerField()
     image = models.URLField()
