@@ -1,3 +1,4 @@
+from crowdfunding.users import serializers
 from django.shortcuts import render
 from django.http import Http404
 from rest_framework import status, permissions
@@ -23,6 +24,7 @@ class ProjectList(APIView):
             serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ProjectDetail(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
@@ -70,3 +72,29 @@ class PledgeList(APIView):
         return Response(
                 serializer.errors,status=status.HTTP_400_BAD_REQUEST
             )
+
+    def put(self, request):
+        pledges = self.get_object()
+        data = request.data
+        serializer = PledgeSerializer(
+            instance=pledges,
+            data=data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+
+    def delete(self, request):
+        pledges = self.get_object()
+        data = request.data 
+        serializer = PledgeSerializer(
+            instance=pledges,
+            data=data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+
+
+
+    

@@ -1,5 +1,7 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
+from rest_framework.response import Response
 from .models import Project, Pledge
+from django.http import Http404
 
 class PledgeSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -11,6 +13,23 @@ class PledgeSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Pledge.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.amount = validated_data.get('amount',instance.amount)
+        instance.comment = validated_data.get('comment',instance.comment)
+        instance.supporter = validated_data.get('supporter',instance.supporter)
+        instance.save()
+        return instance
+
+    def destroy(self, instance, validated_data):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+        except Http404:
+           pass
+        return Response(status=status.HTTP_204_NO_CONTENT)
+       
+        
 
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -32,6 +51,7 @@ class ProjectDetailSerializer(ProjectSerializer):
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title',instance.title)
+        instance.categories = validated_data.get('categories',instance.categories)
         instance.description = validated_data.get('description',instance.description)
         instance.goal = validated_data.get('goal',instance.goal)
         instance.image = validated_data.get('image',instance.image)
