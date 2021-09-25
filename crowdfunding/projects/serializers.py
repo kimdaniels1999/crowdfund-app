@@ -14,22 +14,6 @@ class PledgeSerializer(serializers.Serializer):
     def create(self, validated_data):
         return Pledge.objects.create(**validated_data)
 
-    # def update(self, instance, validated_data):
-    #     instance.amount = validated_data.get('amount',instance.amount)
-    #     instance.comment = validated_data.get('comment',instance.comment)
-    #     instance.supporter = validated_data.get('supporter',instance.supporter)
-    #     instance.save()
-    #     return instance
-
-    # def destroy(self, instance, validated_data):
-    #     try:
-    #         instance = self.get_object()
-    #         self.perform_destroy(instance)
-    #     except Http404:
-    #        pass
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
-       
-        
 
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -41,7 +25,6 @@ class ProjectSerializer(serializers.Serializer):
     is_open = serializers.BooleanField()
     date_created = serializers.DateTimeField()
     owner = serializers.ReadOnlyField(source='owner.id')
-    #pledges = PledgeSerializer(many=True, read_only=True)
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data)
@@ -61,10 +44,3 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.save()
         return instance
 
-    # def destroy(self, instance, validated_data):
-    #     try:
-    #         instance = self.get_object()
-    #         self.perform_destroy(instance)
-    #     except Http404:
-    #        pass
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
