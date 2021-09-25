@@ -75,7 +75,7 @@ class PledgeList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = PledgeSerializer(dunata=request.data)
+        serializer = PledgeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(supporter=request.user)
             return Response(
