@@ -1,4 +1,4 @@
-from crowdfunding.users import serializers
+#from crowdfunding.users import serializers
 from django.shortcuts import render
 from django.http import Http404
 from rest_framework import status, permissions
@@ -52,6 +52,19 @@ class ProjectDetail(APIView):
         )
         if serializer.is_valid():
             serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    def delete(self, request, pk):
+        project = self.get_object(pk)
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class PledgeList(APIView):
@@ -62,7 +75,7 @@ class PledgeList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = PledgeSerializer(data=request.data)
+        serializer = PledgeSerializer(dunata=request.data)
         if serializer.is_valid():
             serializer.save(supporter=request.user)
             return Response(
@@ -73,27 +86,27 @@ class PledgeList(APIView):
                 serializer.errors,status=status.HTTP_400_BAD_REQUEST
             )
 
-    def put(self, request):
-        pledges = self.get_object()
-        data = request.data
-        serializer = PledgeSerializer(
-            instance=pledges,
-            data=data,
-            partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
+    # def put(self, request):
+    #     pledges = self.get_object()
+    #     data = request.data
+    #     serializer = PledgeSerializer(
+    #         instance=pledges,
+    #         data=data,
+    #         partial=True
+    #     )
+    #     if serializer.is_valid():
+    #         serializer.save()
 
-    def delete(self, request):
-        pledges = self.get_object()
-        data = request.data 
-        serializer = PledgeSerializer(
-            instance=pledges,
-            data=data,
-            partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
+    # def delete(self, request):
+    #     pledges = self.get_object()
+    #     data = request.data 
+    #     serializer = PledgeSerializer(
+    #         instance=pledges,
+    #         data=data,
+    #         partial=True
+    #     )
+    #     if serializer.is_valid():
+    #         serializer.save()
 
 
 
