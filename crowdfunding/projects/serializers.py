@@ -1,7 +1,5 @@
-from rest_framework import serializers, status
-from rest_framework.response import Response
+from rest_framework import serializers
 from .models import Project, Pledge
-from django.http import Http404
 
 class PledgeSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -9,7 +7,7 @@ class PledgeSerializer(serializers.Serializer):
     comment = serializers.CharField(max_length=200)
     anonymous = serializers.BooleanField()
     supporter = serializers.ReadOnlyField(source='supporter.id')
-    project_id = serializers.IntegerField()
+    project = serializers.IntegerField()
 
     def create(self, validated_data):
         return Pledge.objects.create(**validated_data)

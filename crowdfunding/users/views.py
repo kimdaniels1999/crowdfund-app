@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUser
-from .serializers import CustomUserSerializer
+from .serializers import CustomUserSerializer, UserDetailSerializer
 
 
 class CustomUserList(APIView):
@@ -31,6 +31,23 @@ class CustomUserDetail(APIView):
         user = self.get_object(pk)
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
+
+    def put(self, request, pk):
+        user = self.get_object(pk)
+        data = request.data   
+        serializer = UserDetailSerializer(
+            instance=user,
+            data=data,
+            partial=True
+        )             
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        user = self.get_object(pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
